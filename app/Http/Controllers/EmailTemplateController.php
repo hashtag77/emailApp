@@ -15,7 +15,8 @@ class EmailTemplateController extends Controller
     public function index()
     {
         $email_template = EmailTemplate::all();
-        return view('emailtemplate.list',compact('email_template'));
+        
+        return view('emailtemplate.list', compact('email_template'));
     }
 
     /**
@@ -40,13 +41,13 @@ class EmailTemplateController extends Controller
             'template_name' => 'required|unique:email_templates',
             'template_layout' => 'required',
         ]);
-        $email_template = new EmailTemplate;   
 
+        $email_template = new EmailTemplate;   
         $email_template->template_name   = $request->template_name;
         $email_template->template_layout = $request->template_layout;
         $email_template->template_key    = str_replace(' ','-',strtolower($request->template_name));
-
         $email_template->save();
+
         return redirect('/template/list')->with('success','Template added successfully.');
     }
 
@@ -70,7 +71,8 @@ class EmailTemplateController extends Controller
     public function edit(EmailTemplate $emailTemplate,$id)
     {
         $email_template = EmailTemplate::find($id);
-        return view('emailtemplate.edit',compact('email_template'));
+
+        return view('emailtemplate.edit', compact('email_template'));
     }
 
     /**
@@ -87,9 +89,10 @@ class EmailTemplateController extends Controller
         ]);
         
         $email_template = EmailTemplate::where('id',$id)
-                                       ->update(['template_layout' => $request->template_layout,
-                                                 'template_status' => $request->template_status,
-                                                ]); 
+                                       ->update([
+                                            'template_layout' => $request->template_layout,
+                                            'template_status' => $request->template_status,
+                                        ]); 
 
         return redirect('/template/list')->with('success','Template updated successfully.');
     }
@@ -103,7 +106,6 @@ class EmailTemplateController extends Controller
     public function destroy(Request $request)
     {
         $id = $request->delid;
-
         $email_template = EmailTemplate::find($id)->delete();
 
         return redirect('/template/list')->with('success','Template deleted successfully.');

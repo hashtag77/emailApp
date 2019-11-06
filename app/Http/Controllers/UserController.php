@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\UserForm;
+use App\EmailTemplate;
+use App\Mail\SendMailable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use App\EmailTemplate;
-use App\UserForm;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\SendMailable;
 
 class UserController extends Controller
 {
@@ -19,6 +19,7 @@ class UserController extends Controller
     public function index()
     {
         $template_list = EmailTemplate::all();
+
         return view('user_form',compact('template_list'));
     }
 
@@ -54,7 +55,6 @@ class UserController extends Controller
         $data['template'] = $request->template;
 
         $save = new UserForm;
-
         $save->first_name = $data['first_name'];
         $save->last_name = $data['last_name'];
         $save->email = $data['email'];
@@ -63,11 +63,10 @@ class UserController extends Controller
         $save->city = $data['city'];
         $save->state = $data['state'];
         $save->country = $data['country'];
-
         $save->save();
-
         
-        Mail::to($to_email)->send(new SendMailable($data));
+        Mail::to($to_email)
+            ->send(new SendMailable($data));
 
         return redirect('/')->with('success','Mail sent successfully.');
     }
